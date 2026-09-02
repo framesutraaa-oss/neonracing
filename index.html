@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="css/fonts.css" type="text/css" charset="utf-8">
     <style>
       body {
-        padding:0;
-        margin:0;
+        padding: 0;
+        margin: 0;
         background-color: #050505;
         overflow: hidden;
       }
-      canvas { pointer-events:none; width: 100%; }
+      canvas { pointer-events: none; width: 100%; }
       #overlay{
         position: absolute;
         z-index: 9999;
@@ -21,7 +21,7 @@
         left: 0;
         width: 100%;
       }
-      /* Custom Neon Start Screen Overlay */
+      /* Custom Neon Splash Screen */
       #neon-start-screen {
         position: fixed;
         top: 0;
@@ -37,7 +37,7 @@
         text-align: center;
       }
       .neon-title {
-        font-size: 3rem;
+        font-size: 2.8rem;
         color: #00ffcc;
         text-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc;
         margin-bottom: 20px;
@@ -45,12 +45,15 @@
         font-style: italic;
         font-weight: 900;
         font-family: sans-serif;
+        letter-spacing: 2px;
       }
       .car-preview {
-        width: 220px;
-        max-width: 80%;
-        margin-bottom: 30px;
-        filter: drop-shadow(0 0 20px #ff0055);
+        width: 260px;
+        max-width: 85%;
+        margin-bottom: 25px;
+        border-radius: 12px;
+        box-shadow: 0 0 25px rgba(255, 0, 85, 0.6);
+        border: 2px solid #ff0055;
       }
       .neon-btn {
         font-size: 1.4rem;
@@ -72,10 +75,11 @@
   </head>
 
   <body>
-    <!-- Custom Neon Racing Screen -->
+    <!-- Custom Start Screen with Proper Car Image -->
     <div id="neon-start-screen">
       <h1 class="neon-title">NEON RACING GAME</h1>
-      <img class="car-preview" src="https://cdn-icons-png.flaticon.com/512/3204/3204121.png" alt="Racing Car">
+      <!-- Asli Racing Car on Track Image -->
+      <img class="car-preview" src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=600&q=80" alt="Racing Car">
       <button class="neon-btn" onclick="startNeonGame()">Start Game</button>
     </div>
 
@@ -134,7 +138,7 @@
 
     <script src="bkcore/hexgl/HUD.js"></script>
     <script src="bkcore/hexgl/RaceData.js"></script>
-    <script src="bkcore/hexgl/ShipControls.js"></script>
+    <script src="bkcore/hexgl/ShipControls.js5"></script>
     <script src="bkcore/hexgl/ShipEffects.js"></script>
     <script src="bkcore/hexgl/CameraChase.js"></script>
     <script src="bkcore/hexgl/Gameplay.js"></script>
@@ -147,17 +151,17 @@
 
     <script>
       function startNeonGame() {
-        // Custom overlay ko hata do
+        // Custom screen ko hatao
         const screen = document.getElementById('neon-start-screen');
         if(screen) {
-          screen.style.transition = 'opacity 0.4s ease';
-          screen.style.opacity = '0';
-          setTimeout(() => screen.remove(), 400);
+          screen.remove();
         }
-        // Original game ke start element ko trigger kar do
-        const startBtn = document.getElementById('start');
-        if(startBtn) {
-          startBtn.click();
+        // Game start trigger karo
+        if(typeof launch === 'function') {
+          launch();
+        } else {
+          const startBtn = document.getElementById('start');
+          if(startBtn) startBtn.click();
         }
       }
     </script>
