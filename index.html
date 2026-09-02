@@ -1,17 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>HexGL by BKcore</title>
+    <title>NEON RACING GAME</title>
     <meta charset="utf-8">
-    <meta name="description" content="HexGL is a futuristic racing game built by Thibaut Despoulain (BKcore) using HTML5, Javascript and WebGL. Come challenge your friends on this fast-paced 3D game!">
-    <meta property="og:title" content="HexGL, the HTML5 futuristic racing game." />
-    <meta property="og:type" content="game" />
-    <meta property="og:url" content="http://hexgl.bkcore.com/" />
-    <meta property="og:image" content="http://hexgl.bkcore.com/image.png" />
-    <meta property="og:site_name" content="HexGL by BKcore" />
-    <meta property="fb:admins" content="1482017639" />
-    <link rel="icon" href="http://hexgl.bkcore.com/favicon.png" type="image/png">
-    <link rel="shortcut icon" href="http://hexgl.bkcore.com/favicon.png" type="image/png">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="css/multi.css" type="text/css" charset="utf-8">
     <link rel="stylesheet" href="css/fonts.css" type="text/css" charset="utf-8">
@@ -19,8 +10,10 @@
       body {
         padding:0;
         margin:0;
+        background-color: #050505;
+        overflow: hidden;
       }
-      canvas { pointer-events:none; width: 100%;}
+      canvas { pointer-events:none; width: 100%; }
       #overlay{
         position: absolute;
         z-index: 9999;
@@ -28,33 +21,70 @@
         left: 0;
         width: 100%;
       }
+      /* Custom Neon Start Screen Overlay */
+      #neon-start-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, #1a002c 0%, #050505 100%);
+        z-index: 999999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      .neon-title {
+        font-size: 3rem;
+        color: #00ffcc;
+        text-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        font-style: italic;
+        font-weight: 900;
+        font-family: sans-serif;
+      }
+      .car-preview {
+        width: 220px;
+        max-width: 80%;
+        margin-bottom: 30px;
+        filter: drop-shadow(0 0 20px #ff0055);
+      }
+      .neon-btn {
+        font-size: 1.4rem;
+        color: #ffffff;
+        background: linear-gradient(45deg, #ff0055, #ff5e00);
+        padding: 15px 45px;
+        border-radius: 35px;
+        border: 2px solid #fff;
+        text-transform: uppercase;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 0 20px #ff0055;
+        letter-spacing: 1px;
+      }
+      .neon-btn:hover {
+        transform: scale(1.05);
+      }
     </style>
-    <script type="text/javascript">
-    //analytics
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-26274524-4']);
-    _gaq.push(['_trackPageview']);
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-    </script>
   </head>
 
   <body>
-    <div id="step-1">
+    <!-- Custom Neon Racing Screen -->
+    <div id="neon-start-screen">
+      <h1 class="neon-title">NEON RACING GAME</h1>
+      <img class="car-preview" src="https://cdn-icons-png.flaticon.com/512/3204/3204121.png" alt="Racing Car">
+      <button class="neon-btn" onclick="startNeonGame()">Start Game</button>
+    </div>
+
+    <div id="step-1" style="display: none">
       <div id="global"></div>
-      <div id="title">
-      </div>
+      <div id="title"></div>
       <div id="menucontainer">
         <div id="menu">
           <div id="start">Start</div>
-          <div id="s-controlType">Controls: Keyboard</div>
-          <div id="s-quality">Quality: High</div>
-          <div id="s-hud">HUD: On</div>
-          <div id="s-godmode" style="display: none">Godmode: Off</div>
-          <div id="s-credits">Credits</div>
         </div>
       </div>
     </div>
@@ -72,17 +102,7 @@
       <div id="time"></div>
       <div id="ctrl-help">Click/Touch to continue.</div>
     </div>
-    <div id="credits" style="display: none">
-      <h3>Code</h3>
-      <p><b>Concept and Development</b><br>Thibaut Despoulain (BKcore)</p>
-      <p><b>Contributors</b><br>townxelliot<br>mahesh.kk</p>
-      <p><b>Technologies</b><br>WebGL<br>JavaScript<br>CoffeeScript<br>Three.js<br>LeapMotion</p>
-      <h3>Graphics</h3>
-      <p><b>HexMKI base model</b><br>Charnel</p>
-      <p><b>Track texture</b><br>Nobiax</p>
-      <h4>Click anywhere to continue.</h4>
-    </div>
-
+    <div id="credits" style="display: none"></div>
     <div id="leapinfo" style="display: none"></div>
 
     <script src="libs/leap-0.4.1.min.js"></script>
@@ -125,5 +145,21 @@
 
     <script src="launch.js"></script>
 
+    <script>
+      function startNeonGame() {
+        // Custom overlay ko hata do
+        const screen = document.getElementById('neon-start-screen');
+        if(screen) {
+          screen.style.transition = 'opacity 0.4s ease';
+          screen.style.opacity = '0';
+          setTimeout(() => screen.remove(), 400);
+        }
+        // Original game ke start element ko trigger kar do
+        const startBtn = document.getElementById('start');
+        if(startBtn) {
+          startBtn.click();
+        }
+      }
+    </script>
   </body>
 </html>
